@@ -1,3 +1,4 @@
+//Archivo encargado de traer la información de las variables del .env y posteriormente exportarlas para ser usadas como import en otra clase/metodo/functions
 export default {
 	PORT: process.env.PORT_DEV,
 	DATABASE: {

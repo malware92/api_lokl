@@ -2,6 +2,9 @@ import { Router, Request, Response } from "express";
 import { tokenValidation } from "../middlewares/tokenValidation";
 import { IUser } from "../models/interfaces/IUser";
 import userService from "../services/user.services";
+import { validateAll } from "../middlewares/validators";
+
+import { check, param, body, validationResult } from 'express-validator';
 
 class UserController {
     router: Router;
@@ -36,9 +39,22 @@ class UserController {
     }
 
     routes() {
-        this.router.post("/register-user", this.registerUser);
-        this.router.post("/confirm-otp", this.confirmOtp);
-        this.router.post("/report-info", tokenValidation, this.reportInfo);
+        this.router.post(
+            "/register-user", 
+            body('email').isEmail().withMessage('Email no valido'),
+            body('share').isNumeric().isLength({ min: 4}),
+            this.registerUser);
+
+        this.router.post(
+            "/confirm-otp",
+            body('email').isEmail().withMessage('Email no valido'),
+            body('share').isNumeric().isLength({ min: 4}),
+            this.confirmOtp);
+
+        this.router.post(
+            "/report-info", 
+            tokenValidation, 
+            this.reportInfo);
     }
 }
 

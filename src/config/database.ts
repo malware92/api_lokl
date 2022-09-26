@@ -1,18 +1,24 @@
 import { createConnection } from "typeorm";
-import env from "../config/environments";
+import env from "../config/_environments";
 
 class Database {
 	constructor() {}
 
 	async conectionMySql() {
+		const host = process.env.DATABASE_HOST;
+		const port = process.env.DATABASE_PORT;
+		const u = process.env.DATABASE_USERNAME;
+		const p = process.env.DATABASE_PASSWORD;
+		const db = process.env.DATABASE_NAME;
+
 		const connection = await createConnection({
 			name: "default",
 			type: "mysql",
-			host: env.DATABASE.host,
-			port: env.DATABASE.port,
-			username: env.DATABASE.username,
-			password: env.DATABASE.password,
-			database: env.DATABASE.name,
+			host: host,
+			port: Number(port),
+			username: u,
+			password: p,
+			database: db,
 			connectTimeout: 180000,
 			maxQueryExecutionTime: 180000,
 			charset: "utf8_unicode_ci",

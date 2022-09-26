@@ -13,16 +13,28 @@ class UserService {
         const httpResponse = new HttpResponse();
 
         try {
-            if ( infoUser.email === "" || !/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g.test( infoUser.email)){
+            /*if ( infoUser.email === "" || !/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g.test( infoUser.email)){
                 httpResponse.error(`El email ${infoUser.email} no es correcto`);
 			    return httpResponse;
-            }
+            }*/
 
-            if (infoUser.shares){
+            /*if (infoUser.shares){
                 if ( infoUser.shares < 20 || infoUser.shares > 400 ){
                     httpResponse.error(`El campo shares no cumple las condiciones mayor a 20 y menor a 400`);
                     return httpResponse;
                 }
+            }*/
+
+            const repoUser = getRepository(Users);
+            const infoRepo = await repoUser.findOne({
+                where: {
+                    emailUser: infoUser.email
+                },
+            });
+
+            if(infoRepo){
+                httpResponse.error("Email registrado previamente");
+                return httpResponse;
             }
             
             let fechaAux = moment().format("YYYY-MM-DD");
@@ -46,7 +58,6 @@ class UserService {
             
             
             utilFunc.sendOtpEmail(infoUser.email,otp);
-            //this.sendOtpEmail(infoUser.email,otp);
 
             httpResponse.success("Creación exitosa",infoCreate);
             return httpResponse;
@@ -62,15 +73,15 @@ class UserService {
 
         try {
             
-            if ( infoUser.email === "" || !/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g.test( infoUser.email)){
+            /*if ( infoUser.email === "" || !/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g.test( infoUser.email)){
                 httpResponse.error(`El email ${infoUser.email} no es correcto`);
 			    return httpResponse;
-            }
+            }*/
 
-            if(!infoUser.otp){
+            /*if(!infoUser.otp){
                 httpResponse.error(`El otp no es correcto`);
                 return httpResponse;
-            }
+            }*/
 
             const repoUser = getRepository(Users);
             const infoRepo = await repoUser.findOne({
@@ -79,6 +90,15 @@ class UserService {
                     otpUser: Number(infoUser.otp)
                 },
             });
+
+            if (infoRepo){
+                const usageOtp = Object(infoRepo).filter( x => x.statusUser === 1 );
+                if(usageOtp){
+                    httpResponse.error("Otp ya usado");
+                    return httpResponse;
+                }
+            }
+            
 
             if(infoRepo){
                 const updateUser = await getConnection()
