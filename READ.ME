@@ -1,0 +1,40 @@
+
+Step for execute
+
+1. npm i
+
+EP to test
+
+--POST
+localhost:3000/api/register-user
+
+Request:
+Header: NO
+Body: 
+
+{
+    "name":"William",
+    "email":"wiilliiam.delgado@gmail.com",
+    "shares":20
+}
+
+--POST
+localhost:3000/api/confirm-otp
+
+Request:
+Header: NO
+Body:
+{
+    "email":"wiilliiam.delgado@gmail.com",
+    "otp":9866
+}
+
+--POST
+localhost:3000/api/report-info
+
+Header: Bearer token
+Body:
+{
+    "fechaIni":"2022-09-23",
+    "fechaFin":"2022-09-24"
+}
