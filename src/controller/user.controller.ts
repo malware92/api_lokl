@@ -5,6 +5,7 @@ import userService from "../services/user.services";
 import { validateReq } from "../middlewares/validators";
 
 import { check, param, body, validationResult } from 'express-validator';
+import { confirmUserValidation, registerUserValidation } from "../middlewares/dataValidation/user-middleware";
 
 class UserController {
     router: Router;
@@ -41,19 +42,13 @@ class UserController {
     routes() {
         this.router.post(
             "/register-user", 
-            body('email').isEmail().withMessage('Email no valido'),
-            body('shares').isNumeric().custom(( value, {req}) =>{
-                if(value >= 20 && value <= 400){
-                    return true;
-                }
-                return false;
-            }).withMessage('Shares no valido'),
+            registerUserValidation,
             validateReq,
             this.registerUser);
 
         this.router.post(
             "/confirm-otp",
-            body('email').isEmail().withMessage('Email no valido'),
+            confirmUserValidation,
             validateReq,
             this.confirmOtp);
 
